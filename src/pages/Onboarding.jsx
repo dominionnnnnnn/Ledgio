@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Logo from '../components/Logo';
@@ -8,16 +8,19 @@ const SLIDES = [
   {
     title: 'Record your business activity in seconds',
     body: 'One short form for each day’s work. No calculator, no notebook.',
+    image: '/images/onboard-1.webp',
     cta: 'Next',
   },
   {
     title: "Track every worker's performance",
     body: 'See what each worker brought in and what they spent.',
+    image: '/images/onboard-2.webp',
     cta: 'Next',
   },
   {
     title: 'See your profit automatically',
     body: 'Revenue minus expenses, worked out for you every day.',
+    image: '/images/onboard-3.webp',
     cta: 'Get started',
   },
 ];
@@ -34,6 +37,16 @@ const ART = [
 /** First launch of the installed app only. */
 export default function Onboarding() {
   const [i, setI] = useState(0);
+  // Slide pictures are optional (4:3, ideally transparent PNG/WebP): until a file exists in
+  // public/images, the drawn card shows instead.
+  const [missing, setMissing] = useState({});
+  useEffect(() => {
+    // Load all three up front so swiping between slides doesn't flash.
+    SLIDES.forEach((sl) => {
+      const img = new Image();
+      img.src = sl.image;
+    });
+  }, []);
   const navigate = useNavigate();
   const slide = SLIDES[i];
   const last = i === SLIDES.length - 1;
@@ -55,12 +68,21 @@ export default function Onboarding() {
       </div>
 
       <div key={i} className="animate-screen-in">
-        <div className="mb-[26px] grid h-[250px] place-items-center rounded-[26px] bg-gradient-to-b from-tint to-tint-soft">
-          <div className="flex w-[170px] flex-col gap-2.5 rounded-[20px] bg-card p-[18px] shadow-card">
-            {ART.map((bar, n) => (
-              <i key={n} className={`block rounded-full ${bar.cls}`} style={{ width: bar.w }} />
-            ))}
-          </div>
+        <div className="mb-[26px] grid aspect-[4/3] max-h-[42dvh] w-full place-items-center overflow-hidden rounded-[26px] bg-gradient-to-b from-tint to-tint-soft">
+          {!missing[i] ? (
+            <img
+              src={slide.image}
+              alt=""
+              onError={() => setMissing((m) => ({ ...m, [i]: true }))}
+              className="size-full object-contain"
+            />
+          ) : (
+            <div className="flex w-[170px] flex-col gap-2.5 rounded-[20px] bg-card p-[18px] shadow-card">
+              {ART.map((bar, n) => (
+                <i key={n} className={`block rounded-full ${bar.cls}`} style={{ width: bar.w }} />
+              ))}
+            </div>
+          )}
         </div>
         <h1 className="text-pretty font-heading text-[34px] font-semibold leading-[1.06]">{slide.title}</h1>
         <p className="mt-2.5 text-pretty text-[15.5px] leading-relaxed opacity-70">{slide.body}</p>
