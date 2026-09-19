@@ -120,3 +120,5 @@
 }
 
 @keyframes lg-slide { from { transform: translateX(40px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes lg-panel-r { from { transform: translateX(-60px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes lg-panel-l { from { transform: translateX(60px); opacity: 0 } to { transform: none; opacity: 1 } }

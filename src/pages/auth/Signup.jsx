@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
 import { authMessage, isEmail } from '../../lib/authErrors';
 import { PasswordInput, TextInput } from '../../components/Field';
-import AuthLayout from './AuthLayout';
+import AuthLayout, { PANELS } from './AuthLayout';
+import SwitchLine from '../../components/SwitchLine';
+import { Lock, Mail } from 'lucide-react';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -39,19 +40,14 @@ export default function Signup() {
   return (
     <AuthLayout
       title="Open your record book"
-      body="One account keeps your workers, records and profit in one place."
+      body="One account keeps your workers, your records and your profit in one place. Free for up to 3 workers."
       cta="Create account"
       onSubmit={submit}
       busy={busy}
       formError={errors.form}
-      alt={
-        <Link
-          to="/login"
-          className="self-center rounded-full px-4 py-2 text-sm font-semibold text-accent-700 no-underline hover:bg-tint-soft"
-        >
-          I already have an account
-        </Link>
-      }
+      panel={PANELS.signup}
+      side="left"
+      alt={<SwitchLine text="Already keeping records with Ledgio?" to="/login" label="Log in" />}
     >
       <TextInput
         label="Email address"
@@ -59,6 +55,7 @@ export default function Signup() {
         inputMode="email"
         autoComplete="email"
         placeholder="you@business.com"
+        icon={Mail}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         error={errors.email}
@@ -66,6 +63,7 @@ export default function Signup() {
       <PasswordInput
         autoComplete="new-password"
         placeholder="At least 6 characters"
+        icon={Lock}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         error={errors.password}

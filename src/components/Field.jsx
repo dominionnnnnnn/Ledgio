@@ -22,25 +22,46 @@ export function Field({ label, error, hint, children, className = '' }) {
   );
 }
 
-export function TextInput({ label, error, hint, className = '', ...props }) {
+/** Optional leading icon (a lucide component) sits inside the box on the left. */
+function Lead({ icon: Icon }) {
+  return (
+    <Icon
+      size={17}
+      strokeWidth={1.6}
+      aria-hidden="true"
+      className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/45"
+    />
+  );
+}
+
+export function TextInput({ label, error, hint, icon, className = '', ...props }) {
   const id = useId();
   return (
     <Field label={<label htmlFor={id}>{label}</label>} error={error} hint={hint} className={className}>
-      <input id={id} className={`${INPUT} ${error ? 'border-bad' : ''}`} aria-invalid={!!error} {...props} />
+      <div className="relative">
+        {icon && <Lead icon={icon} />}
+        <input
+          id={id}
+          className={`${INPUT} ${icon ? 'pl-10' : ''} ${error ? 'border-bad' : ''}`}
+          aria-invalid={!!error}
+          {...props}
+        />
+      </div>
     </Field>
   );
 }
 
-export function PasswordInput({ label = 'Password', error, hint, className = '', ...props }) {
+export function PasswordInput({ label = 'Password', error, hint, icon, className = '', ...props }) {
   const id = useId();
   const [show, setShow] = useState(false);
   return (
     <Field label={<label htmlFor={id}>{label}</label>} error={error} hint={hint} className={className}>
       <div className="relative">
+        {icon && <Lead icon={icon} />}
         <input
           id={id}
           type={show ? 'text' : 'password'}
-          className={`${INPUT} pr-[52px] ${error ? 'border-bad' : ''}`}
+          className={`${INPUT} pr-[52px] ${icon ? 'pl-10' : ''} ${error ? 'border-bad' : ''}`}
           aria-invalid={!!error}
           {...props}
         />
