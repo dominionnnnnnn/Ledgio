@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* Dark mode follows the data-theme attribute on <html> (set in lib/theme.js). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Ledgio v2 tokens (raw values) ---------- */
+:root {
+  --lg-bg: #f5f4f1;
+  --lg-card: #ffffff;
+  --lg-ink: #1d1f20;
+  --lg-accent: #5980a6;
+  --lg-accent-100: #eef6ff;
+  --lg-accent-200: #d6ebff;
+  --lg-accent-400: #94bce3;
+  --lg-accent-600: #597ea3;
+  --lg-accent-700: #416180;
+  --lg-accent-800: #2c455d;
+  --lg-on-accent: #ffffff;
+  --lg-ok: #2c7a56;
+  --lg-ok-soft: #e6f1ea;
+  --lg-bad: #a3564c;
+  --lg-bad-soft: #f6e8e6;
+  --lg-sh: 0 1px 2px rgba(29, 31, 32, .05), 0 10px 30px rgba(29, 31, 32, .07);
+  --lg-sh-sm: 0 1px 2px rgba(29, 31, 32, .06), 0 4px 12px rgba(29, 31, 32, .06);
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --lg-bg: #141a21;
+  --lg-card: #1d2732;
+  --lg-ink: #e9eef3;
+  --lg-accent: #94bce3;
+  --lg-accent-100: #24313e;
+  --lg-accent-200: #2c3d4e;
+  --lg-accent-700: #b5d9fd;
+  --lg-accent-800: #d3e5f6;
+  --lg-on-accent: #10171f;
+  --lg-ok: #63cf9d;
+  --lg-ok-soft: #1d3a2e;
+  --lg-bad: #e79289;
+  --lg-bad-soft: #3a2422;
+  --lg-sh: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px rgba(0, 0, 0, .38);
+  --lg-sh-sm: 0 1px 2px rgba(0, 0, 0, .4), 0 5px 14px rgba(0, 0, 0, .34);
+  color-scheme: dark;
+}
+
+/* ---------- Tailwind theme (utilities read the raw values above) ---------- */
+@theme inline {
+  --font-heading: "Barlow Condensed", system-ui, sans-serif;
+  --font-body: "Barlow", system-ui, sans-serif;
+
+  --color-bg: var(--lg-bg);
+  --color-card: var(--lg-card);
+  --color-ink: var(--lg-ink);
+  --color-accent: var(--lg-accent);
+  --color-accent-100: var(--lg-accent-100);
+  --color-accent-200: var(--lg-accent-200);
+  --color-accent-400: var(--lg-accent-400);
+  --color-accent-600: var(--lg-accent-600);
+  --color-accent-700: var(--lg-accent-700);
+  --color-accent-800: var(--lg-accent-800);
+  --color-on-accent: var(--lg-on-accent);
+  --color-ok: var(--lg-ok);
+  --color-ok-soft: var(--lg-ok-soft);
+  --color-bad: var(--lg-bad);
+  --color-bad-soft: var(--lg-bad-soft);
+  --color-divider: color-mix(in srgb, var(--lg-ink) 9%, transparent);
+  --color-rail: color-mix(in srgb, var(--lg-ink) 7%, transparent);
+  --color-tint: color-mix(in srgb, var(--lg-accent) 12%, transparent);
+  --color-tint-soft: color-mix(in srgb, var(--lg-accent) 7%, transparent);
+
+  --shadow-card: var(--lg-sh);
+  --shadow-card-sm: var(--lg-sh-sm);
+
+  --animate-screen-in: lg-up .24s cubic-bezier(.4, 0, .2, 1) both;
+  --animate-pop: lg-pop .3s cubic-bezier(.34, 1.56, .64, 1) both;
+  --animate-shimmer: lg-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes lg-up { from { transform: translateY(12px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes lg-pop { from { transform: scale(.7); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes lg-shimmer { 0% { background-position: 100% 0 } 100% { background-position: -100% 0 } }
+
+@layer base {
+  html, body, #root { min-height: 100%; }
+  body {
+    margin: 0;
+    background: var(--lg-bg);
+    color: var(--lg-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible { outline: 2px solid var(--lg-accent); outline-offset: 2px; }
+  ::selection { background: color-mix(in srgb, var(--lg-accent) 25%, transparent); }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: .45; }
+}
+
+@layer components {
+  /* Numbers: condensed, tabular. */
+  .lg-num { font-family: var(--font-heading); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  /* Press feedback used on tappable cards and buttons. */
+  .lg-tap { transition: transform .14s ease, box-shadow .2s ease; }
+  .lg-tap:active { transform: scale(.985); }
+  /* Skeleton shimmer. */
+  .lg-sk {
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--lg-ink) 7%, transparent) 25%,
+      color-mix(in srgb, var(--lg-ink) 13%, transparent) 37%,
+      color-mix(in srgb, var(--lg-ink) 7%, transparent) 63%);
+    background-size: 400% 100%;
+    animation: var(--animate-shimmer);
+  }
+  .lg-noscroll { scrollbar-width: none; }
+  .lg-noscroll::-webkit-scrollbar { display: none; }
+}
+
+@keyframes lg-slide { from { transform: translateX(40px); opacity: 0 } to { transform: none; opacity: 1 } }
