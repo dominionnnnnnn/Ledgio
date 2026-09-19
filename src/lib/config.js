@@ -16,3 +16,7 @@ export const SUPPORT_WHATSAPP = {
   display: '+234 808 384 2079',
   link: 'https://wa.me/2348083842079',
 };
+
+// Where Ledgio is hosted. Shown on the landing page's install steps.
+export const SITE_URL = 'https://ledgio-nine.vercel.app';
+export const SITE_HOST = 'ledgio-nine.vercel.app';

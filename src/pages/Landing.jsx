@@ -5,17 +5,20 @@ import {
   ChartColumn,
   Download,
   Menu,
+  Moon,
   MessageCircle,
   SlidersHorizontal,
   Sparkles,
+  Sun,
   TrendingUp,
   Users,
   WifiOff,
   X,
 } from 'lucide-react';
-import BrandMark from '../components/BrandMark';
+import Logo from '../components/Logo';
+import { setThemePref } from '../lib/theme';
 import PhoneMock, { SummaryMock } from './landing/PhoneMock';
-import { SUPPORT_WHATSAPP } from '../lib/config';
+import { SITE_HOST, SUPPORT_WHATSAPP } from '../lib/config';
 import { isIOS, useInstallPrompt } from '../lib/installPrompt';
 
 const STEPS = [
@@ -82,7 +85,7 @@ function SectionTitle({ kicker, title, sub }) {
 
 function InstallCard() {
   const { canInstall, install } = useInstallPrompt();
-  const host = window.location.host;
+  const host = SITE_HOST;
   const steps = isIOS()
     ? [
         `Open ${host} in Safari.`,
@@ -149,6 +152,29 @@ function InstallCard() {
   );
 }
 
+/** Light / dark switch for the landing page (same setting the app uses). */
+function ThemeToggle() {
+  const [dark, setDark] = useState(() => document.documentElement.dataset.theme === 'dark');
+  useEffect(() => {
+    // Keep the icon right if the setting changes elsewhere (e.g. the phone switches to dark).
+    const obs = new MutationObserver(() => setDark(document.documentElement.dataset.theme === 'dark'));
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <button
+      onClick={() => {
+        setThemePref(dark ? 'light' : 'dark');
+      }}
+      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      title={dark ? 'Light mode' : 'Dark mode'}
+      className="grid size-10 flex-none place-items-center rounded-[14px] border-0 bg-rail text-ink hover:bg-tint"
+    >
+      {dark ? <Sun size={18} strokeWidth={1.7} /> : <Moon size={18} strokeWidth={1.7} />}
+    </button>
+  );
+}
+
 /** Public marketing page shown to browser visitors (Landing v2). */
 export default function Landing() {
   const [menu, setMenu] = useState(false);
@@ -167,8 +193,7 @@ export default function Landing() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 py-3.5 lg:px-8">
           <Link to="/" className="mr-auto flex items-center gap-2.5 text-ink no-underline">
-            <BrandMark size={34} />
-            <span className="font-heading text-xl font-semibold">Ledgio</span>
+            <Logo height={30} />
           </Link>
           <nav className="hidden items-center gap-1 lg:flex">
             {NAV.map(([href, label]) => (
@@ -181,6 +206,7 @@ export default function Landing() {
               </a>
             ))}
           </nav>
+          <ThemeToggle />
           <div className="hidden gap-2.5 lg:flex">
             <Link to="/login" className={`${ghost} h-10 px-5 text-[15px]`}>
               Log in
@@ -329,10 +355,7 @@ export default function Landing() {
       <footer className="border-t border-divider">
         <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 lg:grid-cols-[1.4fr_1fr_1fr] lg:px-8">
           <div className="flex flex-col gap-2.5">
-            <div className="flex items-center gap-2.5">
-              <BrandMark size={30} />
-              <span className="font-heading text-lg font-semibold">Ledgio</span>
-            </div>
+            <Logo height={28} />
             <p className="m-0 max-w-xs text-[13.5px] leading-relaxed opacity-60">
               The modern record book for small businesses. Made in Lagos.
             </p>

@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icons/apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'logo.svg', 'logo-dark.svg', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'],
       manifest: {
         name: 'Ledgio',
         short_name: 'Ledgio',

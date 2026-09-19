@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import Logo from '../components/Logo';
 import { markOnboardingSeen } from '../lib/platform';
 
 const SLIDES = [
@@ -45,7 +46,9 @@ export default function Onboarding() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col px-[22px] pb-[max(26px,env(safe-area-inset-bottom))] pt-[max(10px,env(safe-area-inset-top))]">
       <div className="mb-3.5 flex items-center">
-        <span className="mr-auto text-[11px] font-semibold uppercase tracking-[.14em] opacity-45">Ledgio</span>
+        <span className="mr-auto">
+          <Logo height={22} />
+        </span>
         <Button variant="ghost" size="sm" onClick={() => finish('/signup')}>
           Skip
         </Button>

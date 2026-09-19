@@ -34,7 +34,7 @@ site's storage in DevTools → Application.
 
 Firebase's reset email opens Firebase's own page by default. To use Ledgio's `/reset` screen instead:
 Firebase console → Authentication → Templates → Password reset → edit (pencil) → **Customize action URL** →
-`https://<your-domain>/reset`. Both work; the custom one keeps the user inside Ledgio.
+`https://ledgio-nine.vercel.app/reset`. Both work; the custom one keeps the user inside Ledgio.
 
 ## Record fields
 
@@ -87,7 +87,9 @@ and `link: "/app/support/<tid>"` so the user sees the red dot.
 2. Add every `VITE_…` variable from `.env` under Project → Settings → Environment Variables.
 3. `vercel.json` sends every app route to `index.html` so deep links like `/app/records` work.
 4. Firebase console → Authentication → Settings → **Authorized domains** → add your Vercel domain.
-5. Optional: Authentication → Templates → Password reset → Customize action URL → `https://<domain>/reset`.
+5. Optional: Authentication → Templates → Password reset → Customize action URL → `https://ledgio-nine.vercel.app/reset`.
+
+Live at **https://ledgio-nine.vercel.app** (set in `src/lib/config.js` → `SITE_URL`, and in `index.html` meta tags).
 
 ## Structure
 

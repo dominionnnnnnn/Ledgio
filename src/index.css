@@ -22,6 +22,8 @@
   --lg-bad-soft: #f6e8e6;
   --lg-sh: 0 1px 2px rgba(29, 31, 32, .05), 0 10px 30px rgba(29, 31, 32, .07);
   --lg-sh-sm: 0 1px 2px rgba(29, 31, 32, .06), 0 4px 12px rgba(29, 31, 32, .06);
+  --lg-logo-ink: #041a3c;
+  --lg-logo-blue: #1b6bf8;
   color-scheme: light;
 }
 [data-theme="dark"] {
@@ -40,6 +42,8 @@
   --lg-bad-soft: #3a2422;
   --lg-sh: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px rgba(0, 0, 0, .38);
   --lg-sh-sm: 0 1px 2px rgba(0, 0, 0, .4), 0 5px 14px rgba(0, 0, 0, .34);
+  --lg-logo-ink: #e9eef3;
+  --lg-logo-blue: #3d84ff;
   color-scheme: dark;
 }
 
