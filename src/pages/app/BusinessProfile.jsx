@@ -6,7 +6,8 @@ import { auth } from '../../lib/firebase';
 import { updateBusiness } from '../../lib/data';
 import { uploadImage } from '../../lib/cloudinary';
 import { settle } from '../../lib/settle';
-import { CURRENCIES } from '../../lib/config';
+import { CURRENCIES, isPremium, premiumEndsAt } from '../../lib/config';
+import PremiumBadge from '../../components/app/PremiumBadge';
 import { BUSINESS_TYPES } from '../../lib/fields';
 import { BackBar } from '../../components/app/Header';
 import ThemeSwitch from '../../components/app/ThemeSwitch';
@@ -147,6 +148,24 @@ export default function BusinessProfile() {
 
         <Card title="Appearance">
           <ThemeSwitch />
+        </Card>
+
+        <Card title="Plan">
+          {isPremium(business) ? (
+            <div className="flex flex-col gap-1.5">
+              <PremiumBadge className="self-start" />
+              <p className="m-0 text-[14px] opacity-70">
+                Unlimited workers and records
+                {premiumEndsAt(business) &&
+                  ` until ${premiumEndsAt(business).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`}
+                .
+              </p>
+            </div>
+          ) : (
+            <p className="m-0 text-[14px] opacity-70">
+              Free plan: up to 3 workers and 50 records a month. Premium is coming soon.
+            </p>
+          )}
         </Card>
 
         <Card title="Account">

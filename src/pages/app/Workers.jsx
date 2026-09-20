@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useRecordsSince, useWorkers } from '../../lib/data';
 import { startOfMonth, today } from '../../lib/dates';
 import { money, totals } from '../../lib/money';
-import { limitsFor } from '../../lib/config';
+import { limitsFor, planOf } from '../../lib/config';
 import { BackBar } from '../../components/app/Header';
 import { useAppShell } from '../../components/app/AppLayout';
 import Avatar from '../../components/app/Avatar';
@@ -18,7 +18,7 @@ export default function Workers() {
   const workers = useWorkers(business.id);
   const recs = useRecordsSince(business.id, startOfMonth(today()));
   const list = workers.data ?? [];
-  const limit = limitsFor(business.plan).workers;
+  const limit = limitsFor(planOf(business)).workers;
 
   return (
     <>
@@ -38,7 +38,9 @@ export default function Workers() {
       <div className="flex flex-col gap-3 px-4 pb-7 pt-1 lg:px-0">
         <div className="flex items-center gap-3">
           <p className="m-0 mr-auto text-[13px] opacity-60">
-            {list.length} of {limit} workers on the free plan · results for this month
+            {Number.isFinite(limit)
+              ? `${list.length} of ${limit} workers on the free plan · results for this month`
+              : `${list.length} ${list.length === 1 ? 'worker' : 'workers'} · results for this month`}
           </p>
           <div className="hidden lg:block">
             <Button size="sm" onClick={addWorker}>

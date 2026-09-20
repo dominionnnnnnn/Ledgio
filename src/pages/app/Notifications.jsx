@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, CalendarX2, Crown, MessageSquareText, TrendingUp } from 'lucide-react';
+import { Bell, CalendarX2, Crown, Megaphone, MessageSquareText, TrendingUp } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { markAllRead, markRead } from '../../lib/data';
 import { today, toISO, addDays } from '../../lib/dates';
@@ -11,7 +11,8 @@ const KIND = {
   reply: { icon: MessageSquareText, cls: 'bg-tint text-accent-800' },
   record: { icon: CalendarX2, cls: 'bg-bad-soft text-bad' },
   worker: { icon: TrendingUp, cls: 'bg-ok-soft text-ok' },
-  plan: { icon: Crown, cls: 'bg-tint text-accent-800' },
+  plan: { icon: Crown, cls: 'bg-gold-soft text-gold' },
+  broadcast: { icon: Megaphone, cls: 'bg-tint text-accent-800' },
 };
 
 function when(ts) {
@@ -28,14 +29,14 @@ export default function Notifications() {
   const { notifs } = useAppShell();
   const navigate = useNavigate();
   const list = notifs?.data ?? [];
-  const unreadIds = list.filter((n) => n.unread).map((n) => n.id);
+  const unread = list.filter((n) => n.unread);
 
   const groups = ['Today', 'Yesterday', 'Earlier']
     .map((g) => ({ label: g, items: list.map((n) => ({ ...n, ...when(n.createdAt) })).filter((n) => n.group === g) }))
     .filter((g) => g.items.length);
 
   function open(n) {
-    if (n.unread) markRead(business.id, n.id);
+    if (n.unread) markRead(business.id, n);
     if (n.link) navigate(n.link);
   }
 
@@ -43,11 +44,11 @@ export default function Notifications() {
     <>
       <BackBar title="Notifications" top />
       <div className="flex flex-col gap-3.5 px-4 pb-7 pt-1 lg:mx-auto lg:w-full lg:max-w-2xl lg:px-0">
-        {unreadIds.length > 0 && (
+        {unread.length > 0 && (
           <div className="flex items-center gap-2.5 rounded-[18px] bg-tint px-3.5 py-3 text-accent-800">
-            <span className="mr-auto text-[13.5px] font-semibold">{unreadIds.length} new since you last looked</span>
+            <span className="mr-auto text-[13.5px] font-semibold">{unread.length} new since you last looked</span>
             <button
-              onClick={() => markAllRead(business.id, unreadIds)}
+              onClick={() => markAllRead(business.id, unread)}
               className="flex-none whitespace-nowrap rounded-full border-0 bg-card px-3 py-2 text-[12.5px] font-semibold text-inherit shadow-card-sm"
             >
               Mark all read

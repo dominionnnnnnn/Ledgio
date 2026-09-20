@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { Bell, ChevronLeft, Menu } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { BUSINESS_TYPES } from '../../lib/fields';
+import { isPremium } from '../../lib/config';
+import PremiumBadge from './PremiumBadge';
 import BrandMark from '../BrandMark';
 import { useAppShell } from './AppLayout';
 
@@ -19,7 +21,10 @@ export function HomeHeader() {
       <div className="mr-auto flex min-w-0 items-center gap-[11px]">
         <BrandMark size={40} letter={business.name[0]?.toUpperCase()} logoUrl={business.logoUrl} />
         <div className="flex min-w-0 flex-col leading-[1.15]">
-          <span className="truncate font-heading text-[19px] font-semibold">{business.name}</span>
+          <span className="flex items-center gap-1.5">
+            <span className="truncate font-heading text-[19px] font-semibold">{business.name}</span>
+            {isPremium(business) && <PremiumBadge compact />}
+          </span>
           {typeLabel && <span className="text-[11.5px] opacity-55">{typeLabel}</span>}
         </div>
       </div>

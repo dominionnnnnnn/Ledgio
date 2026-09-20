@@ -4,7 +4,7 @@ import { Camera, LoaderCircle, Trash2, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { addWorker, deleteWorker, updateWorker, useWorker, useWorkers } from '../../lib/data';
 import { uploadImage } from '../../lib/cloudinary';
-import { limitsFor } from '../../lib/config';
+import { limitsFor, planOf } from '../../lib/config';
 import { BackBar } from '../../components/app/Header';
 import ConfirmDialog from '../../components/app/ConfirmDialog';
 import LimitNotice from '../../components/app/LimitNotice';
@@ -77,7 +77,7 @@ export default function WorkerForm({ embedded = false, onDone }) {
     );
   }
 
-  const limit = limitsFor(business.plan).workers;
+  const limit = limitsFor(planOf(business)).workers;
   const count = business.workerCount ?? workers.data?.length ?? 0;
   if (isNew && count >= limit) {
     return (

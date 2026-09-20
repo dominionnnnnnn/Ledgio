@@ -6,7 +6,7 @@ import { addRecord, updateRecord, useRecord, useUsage, useWorkers } from '../../
 import { lastDayOfMonth, monthOf, today } from '../../lib/dates';
 import { formatTyping, money, parseAmount, symbolFor } from '../../lib/money';
 import { FIELD_HINTS, MONEY_FIELDS } from '../../lib/fields';
-import { limitsFor } from '../../lib/config';
+import { limitsFor, planOf } from '../../lib/config';
 import { settle } from '../../lib/settle';
 import { BackBar } from '../../components/app/Header';
 import Avatar from '../../components/app/Avatar';
@@ -78,7 +78,7 @@ export default function RecordForm({ embedded = false, presetWorker, onDone }) {
   }, [isNew, workerId, active]);
 
   const usage = useUsage(business.id, monthOf(date));
-  const limit = limitsFor(business.plan).recordsPerMonth;
+  const limit = limitsFor(planOf(business)).recordsPerMonth;
 
   if ((!isNew && existing.loading) || workers.loading) return <LoadingScreen />;
   if (!isNew && !existing.data) {

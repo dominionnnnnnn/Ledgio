@@ -17,10 +17,11 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useNotifications, useUsage } from '../../lib/data';
+import { touchActive, useNotifications, useUsage } from '../../lib/data';
 import { useAlerts } from '../../lib/alerts';
 import { thisMonth } from '../../lib/dates';
-import { limitsFor } from '../../lib/config';
+import { isPremium, limitsFor, planOf, premiumEndsAt } from '../../lib/config';
+import PremiumBadge from './PremiumBadge';
 import { BUSINESS_TYPES } from '../../lib/fields';
 import { useDesktop } from '../../hooks/useDesktop';
 import BrandMark from '../BrandMark';
@@ -59,7 +60,23 @@ const TITLES = [
   ['/app/business', 'Business profile', 'Your business, appearance and account'],
 ];
 
-function UsageCard({ usage, limits }) {
+function UsageCard({ usage, limits, business }) {
+  if (isPremium(business)) {
+    const ends = premiumEndsAt(business);
+    return (
+      <div className="flex flex-col gap-2 rounded-[20px] bg-gradient-to-br from-gold-soft to-card p-[15px] shadow-card">
+        <div className="flex items-center gap-2 text-gold">
+          <Crown size={16} strokeWidth={1.8} />
+          <span className="text-[11px] font-semibold uppercase tracking-[.1em]">Premium</span>
+        </div>
+        <span className="text-[12.5px] leading-normal opacity-75">
+          Unlimited workers and records.
+          {ends && ` Until ${ends.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.`}
+        </span>
+        <span className="text-[12px] opacity-55">{usage.count} records this month</span>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col gap-[9px] rounded-[20px] bg-gradient-to-br from-tint to-card p-[15px] shadow-card">
       <div className="flex items-center gap-2 text-accent-800">
@@ -105,7 +122,7 @@ function MenuItem({ icon: Icon, label, onClick, badge }) {
 function SlideMenu({ onClose, unread, usage }) {
   const { business, user, logout } = useAuth();
   const navigate = useNavigate();
-  const limits = limitsFor(business.plan);
+  const limits = limitsFor(planOf(business));
   const go = (to) => {
     onClose();
     navigate(to);
@@ -127,7 +144,10 @@ function SlideMenu({ onClose, unread, usage }) {
         <div className="flex items-center gap-3 px-[18px] pb-4 pt-[max(20px,env(safe-area-inset-top))]">
           <BrandMark size={42} letter={business.name[0]?.toUpperCase()} logoUrl={business.logoUrl} />
           <div className="flex min-w-0 flex-col leading-tight">
-            <span className="truncate font-heading text-lg font-semibold">{business.name}</span>
+            <span className="flex items-center gap-1.5">
+              <span className="truncate font-heading text-lg font-semibold">{business.name}</span>
+              {isPremium(business) && <PremiumBadge compact />}
+            </span>
             <span className="truncate text-[11.5px] opacity-55">{user.email}</span>
           </div>
           <button
@@ -149,7 +169,7 @@ function SlideMenu({ onClose, unread, usage }) {
         </div>
         <div className="mx-3.5 mb-[max(18px,env(safe-area-inset-bottom))] mt-auto flex flex-col gap-3 pt-6">
           <ThemeSwitch />
-          <UsageCard usage={usage} limits={limits} />
+          <UsageCard usage={usage} limits={limits} business={business} />
           <button
             onClick={logout}
             className="flex h-[50px] items-center justify-center gap-[9px] rounded-full border border-bad/40 bg-bad-soft font-heading text-base font-semibold text-bad"
@@ -182,7 +202,10 @@ function Sidebar({ unread, usage, onAddRecord }) {
       <NavLink to="/app/business" className="mb-5 flex items-center gap-3 px-1 text-ink no-underline">
         <BrandMark size={40} letter={business.name[0]?.toUpperCase()} logoUrl={business.logoUrl} />
         <div className="flex min-w-0 flex-col leading-tight">
-          <span className="truncate font-heading text-[19px] font-semibold">{business.name}</span>
+          <span className="flex items-center gap-1.5">
+            <span className="truncate font-heading text-[19px] font-semibold">{business.name}</span>
+            {isPremium(business) && <PremiumBadge compact />}
+          </span>
           {typeLabel && <span className="text-[11.5px] opacity-55">{typeLabel}</span>}
         </div>
       </NavLink>
@@ -218,7 +241,7 @@ function Sidebar({ unread, usage, onAddRecord }) {
         ))}
       </nav>
       <div className="mt-auto flex flex-col gap-3 pt-6">
-        <UsageCard usage={usage} limits={limitsFor(business.plan)} />
+        <UsageCard usage={usage} limits={limitsFor(planOf(business))} business={business} />
         <ThemeSwitch />
         <button
           onClick={logout}
@@ -285,8 +308,12 @@ function TopBar({ unread }) {
 
 /** Frame for every signed-in screen. Phone: single column + slide menu. Desktop: sidebar + top bar. */
 export default function AppLayout() {
-  const { business } = useAuth();
+  const { business, user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (navigator.onLine) touchActive(user.uid);
+  }, [user.uid]);
   const [modal, setModal] = useState(null); // { kind: 'record' | 'worker', worker? }
   const location = useLocation();
   const navigate = useNavigate();
@@ -311,14 +338,14 @@ export default function AppLayout() {
     [desktop, navigate],
   );
   const addWorker = useCallback(() => {
-    const limit = limitsFor(business.plan).workers;
+    const limit = limitsFor(planOf(business)).workers;
     if ((business.workerCount ?? 0) >= limit) {
       toast(`The free plan allows ${limit} workers`);
       return;
     }
     if (desktop) setModal({ kind: 'worker' });
     else navigate('/app/workers/new');
-  }, [business.plan, business.workerCount, desktop, navigate, toast]);
+  }, [business, desktop, navigate, toast]);
 
   useEffect(() => {
     setMenuOpen(false);

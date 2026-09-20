@@ -24,6 +24,8 @@
   --lg-sh-sm: 0 1px 2px rgba(29, 31, 32, .06), 0 4px 12px rgba(29, 31, 32, .06);
   --lg-logo-ink: #041a3c;
   --lg-logo-blue: #1b6bf8;
+  --lg-gold: #8a6a1e;
+  --lg-gold-soft: #f6efdf;
   color-scheme: light;
 }
 [data-theme="dark"] {
@@ -44,6 +46,8 @@
   --lg-sh-sm: 0 1px 2px rgba(0, 0, 0, .4), 0 5px 14px rgba(0, 0, 0, .34);
   --lg-logo-ink: #e9eef3;
   --lg-logo-blue: #3d84ff;
+  --lg-gold: #e0bd6a;
+  --lg-gold-soft: #3a3222;
   color-scheme: dark;
 }
 
@@ -67,6 +71,8 @@
   --color-ok-soft: var(--lg-ok-soft);
   --color-bad: var(--lg-bad);
   --color-bad-soft: var(--lg-bad-soft);
+  --color-gold: var(--lg-gold);
+  --color-gold-soft: var(--lg-gold-soft);
   --color-divider: color-mix(in srgb, var(--lg-ink) 9%, transparent);
   --color-rail: color-mix(in srgb, var(--lg-ink) 7%, transparent);
   --color-tint: color-mix(in srgb, var(--lg-accent) 12%, transparent);

@@ -4,7 +4,7 @@ import { db } from './firebase';
 import { notifyOnce } from './data';
 import { addDays, isoWeek, startOfWeek, today } from './dates';
 import { money, totals } from './money';
-import { limitsFor } from './config';
+import { limitsFor, planOf } from './config';
 
 /**
  * In-app alerts, worked out on the phone (no server needed). Each has a stable id,
@@ -24,7 +24,7 @@ async function runChecks(business, usageCount) {
     : t;
 
   // Plan usage
-  const limit = limitsFor(business.plan).recordsPerMonth;
+  const limit = limitsFor(planOf(business)).recordsPerMonth;
   const month = t.slice(0, 7);
   if (usageCount >= limit) {
     await notifyOnce(bizId, `plan100-${month}`, {

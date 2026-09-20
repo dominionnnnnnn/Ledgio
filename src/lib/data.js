@@ -165,14 +165,27 @@ export async function notifyOnce(bizId, key, data) {
   }
 }
 
-export function markRead(bizId, id) {
-  return updateDoc(doc(notifsCol(bizId), id), { unread: false }).catch(() => {});
+/**
+ * Mark one notification read. If it came from an admin broadcast, also bump that broadcast's
+ * "opened" counter so the console can see how many people read it.
+ */
+export function markRead(bizId, notif) {
+  const id = typeof notif === 'string' ? notif : notif.id;
+  const broadcastId = typeof notif === 'string' ? null : notif.broadcastId;
+  const batch = writeBatch(db);
+  batch.update(doc(notifsCol(bizId), id), { unread: false });
+  if (broadcastId) batch.update(doc(db, 'broadcasts', broadcastId), { opened: increment(1) });
+  return batch.commit().catch(() => {});
 }
 
-export function markAllRead(bizId, ids) {
-  if (!ids.length) return Promise.resolve();
+export function markAllRead(bizId, notifs) {
+  const list = notifs.map((n) => (typeof n === 'string' ? { id: n } : n));
+  if (!list.length) return Promise.resolve();
   const batch = writeBatch(db);
-  for (const id of ids) batch.update(doc(notifsCol(bizId), id), { unread: false });
+  for (const n of list) {
+    batch.update(doc(notifsCol(bizId), n.id), { unread: false });
+    if (n.broadcastId) batch.update(doc(db, 'broadcasts', n.broadcastId), { opened: increment(1) });
+  }
   return batch.commit().catch(() => {});
 }
 
@@ -229,4 +242,21 @@ export function updateBusiness(bizId, changes) {
   const batch = writeBatch(db);
   batch.update(bizDoc(bizId), { ...changes, updatedAt: serverTimestamp() });
   return { id: bizId, done: batch.commit() };
+}
+
+// ---------- activity ----------
+/**
+ * Mark the user as active today (users/{uid}.lastActiveAt), at most once a day per device.
+ * The admin console uses it for "last active" and "inactive for a week".
+ */
+export function touchActive(uid) {
+  const key = `ledgio:active:${uid}`;
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    if (localStorage.getItem(key) === today) return;
+    localStorage.setItem(key, today);
+  } catch {
+    /* storage unavailable: still fine to write */
+  }
+  updateDoc(doc(db, 'users', uid), { lastActiveAt: serverTimestamp() }).catch(() => {});
 }
