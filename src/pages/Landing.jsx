@@ -357,7 +357,16 @@ export default function Landing() {
           <div className="flex flex-col gap-2.5">
             <Logo height={28} />
             <p className="m-0 max-w-xs text-[13.5px] leading-relaxed opacity-60">
-              The modern record book for small businesses. Made in Lagos.
+              The modern record book for small businesses. Made by{' '}
+              <a
+                href="https://domstack.vercel.app"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-ink/75 underline decoration-ink/25 underline-offset-2 hover:text-ink"
+              >
+                Dominion
+              </a>
+              .
             </p>
           </div>
           <div className="flex flex-col gap-2 text-[14px]">
@@ -391,7 +400,16 @@ export default function Landing() {
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-5 pb-8 text-xs opacity-50 lg:px-8">
-          © {new Date().getFullYear()} Ledgio. Made in Lagos.
+          © {new Date().getFullYear()} Ledgio. Made by{' '}
+          <a
+            href="https://domstack.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold underline decoration-ink/30 underline-offset-2 hover:opacity-100"
+          >
+            Dominion
+          </a>
+          .
         </div>
       </footer>
     </div>

@@ -62,6 +62,18 @@ keep them if the worker is renamed, reassigned a truck, or deleted.
 
 **Offline:** writes save to the phone immediately and sync when back online (`src/lib/settle.js`).
 
+## Phone notifications (push)
+
+1. Firebase console → **Cloud Messaging → Web configuration → Generate key pair**. Copy the key into
+   `.env` as `VITE_FIREBASE_VAPID_KEY` (and into Vercel's environment variables).
+2. `public/firebase-messaging-sw.js` shows notifications while Ledgio is closed. It holds the Firebase
+   config directly, because a service worker can't read `.env`.
+3. People are asked after their first record (a card on the home screen) and can switch it on or off
+   any time at the top of the notifications screen. The browser only asks once, so a refusal sticks.
+4. Each device that agrees is saved under `businesses/{id}/pushTokens/{token}`. Sending happens from the
+   admin app's `/api/send-push` function.
+5. iPhones only allow push once Ledgio is added to the home screen (iOS 16.4+).
+
 ## Notifications
 
 Generated in the app (`src/lib/alerts.js`) when it opens, each with a fixed id so they never repeat:
