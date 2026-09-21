@@ -13,6 +13,7 @@ import EmptyState from '../../components/app/EmptyState';
 import Segmented from '../../components/app/Segmented';
 import { BarPairs, Legend } from '../../components/app/Charts';
 import Button from '../../components/Button';
+import PushPrompt from '../../components/app/PushPrompt';
 import { recordTitle } from './Records';
 
 const label = 'flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[.13em] opacity-60';
@@ -114,6 +115,8 @@ export default function Home() {
               </Link>
             </div>
           </section>
+
+          <PushPrompt show={(records.data ?? []).length > 0} />
 
           {/* Main action (desktop has it in the sidebar) */}
           <button

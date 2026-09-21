@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { touchActive, useNotifications, useUsage } from '../../lib/data';
 import { useAlerts } from '../../lib/alerts';
+import { onForegroundPush } from '../../lib/push';
 import { thisMonth } from '../../lib/dates';
 import { isPremium, limitsFor, planOf, premiumEndsAt } from '../../lib/config';
 import PremiumBadge from './PremiumBadge';
@@ -319,6 +320,16 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const toast = useToast();
   const desktop = useDesktop();
+
+  // A push that arrives while Ledgio is open shows as a toast instead of an OS banner.
+  useEffect(() => {
+    let stop;
+    onForegroundPush(({ title }) => toast(title || 'New notification')).then((fn) => {
+      stop = fn;
+    });
+    return () => stop?.();
+  }, [toast]);
+
 
   const usage = useUsage(business.id, thisMonth());
   const notifs = useNotifications(business.id);
